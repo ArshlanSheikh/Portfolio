@@ -1,6 +1,7 @@
 export const profile = {
 	name: 'Arshlan Sheikh',
 	role: 'Full Stack MERN Developer',
+	imageUrl: '/images/profile/arshlan.jpg',
 	email: '',
 	phone: '',
 	location: '',

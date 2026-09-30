@@ -1,9 +1,21 @@
+import { useState } from 'react'
 import { ArrowDownRight, ArrowUpRight, Code2, GitBranch, Link2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import fallbackPortrait from '../../assets/hero2.jpg'
 import { profile } from '../../utils/constants.js'
 import styles from './Hero.module.css'
 
 function Hero() {
+	const [portraitSrc, setPortraitSrc] = useState(profile.imageUrl)
+	const [usingFallback, setUsingFallback] = useState(false)
+
+	function handlePortraitError() {
+		if (!usingFallback) {
+			setPortraitSrc(fallbackPortrait)
+			setUsingFallback(true)
+		}
+	}
+
 	return (
 		<section className={styles.hero}>
 			<div className={styles.inner}>
@@ -22,21 +34,21 @@ function Hero() {
 						<a href={profile.resumeUrl || '#resume'} aria-disabled={!profile.resumeUrl} onClick={(event) => !profile.resumeUrl && event.preventDefault()}><Code2 size={16} /> Resume{!profile.resumeUrl && <small>add file</small>}</a>
 					</div>
 				</div>
-				<div className={styles.visual} aria-label="Code editor illustration">
-					<div className={styles.editorBar}><span><i /><i /><i /></span><span>portfolio.config.js</span><Code2 size={15} /></div>
-					<div className={styles.editorBody}>
-						<div className={styles.line}><b>01</b><code><em>const</em> developer = {'{'}</code></div>
-						<div className={styles.line}><b>02</b><code>&nbsp;&nbsp;name: <strong>"Arshlan Sheikh"</strong>,</code></div>
-						<div className={styles.line}><b>03</b><code>&nbsp;&nbsp;role: <strong>"Full Stack MERN"</strong>,</code></div>
-						<div className={styles.line}><b>04</b><code>&nbsp;&nbsp;focus: [</code></div>
-						<div className={styles.line}><b>05</b><code>&nbsp;&nbsp;&nbsp;&nbsp;<strong>"Thoughtful UI"</strong>,</code></div>
-						<div className={styles.line}><b>06</b><code>&nbsp;&nbsp;&nbsp;&nbsp;<strong>"Reliable APIs"</strong></code></div>
-						<div className={styles.line}><b>07</b><code>&nbsp;&nbsp;],</code></div>
-						<div className={styles.line}><b>08</b><code>{'}'}</code></div>
-						<div className={styles.cursorLine}><span /></div>
+				<div className={styles.visual}>
+					<div className={styles.portraitFrame}>
+						<img
+							className={styles.portrait}
+							src={portraitSrc}
+							alt={`Portrait of ${profile.name}`}
+							onError={handlePortraitError}
+						/>
 					</div>
-					<div className={styles.editorFooter}><span><i /> JavaScript</span><span>UTF-8</span><span>Ready to build</span></div>
-					<div className={styles.orbit}><span>REACT</span><span>NODE</span><span>MONGO</span></div>
+					<div className={styles.codeCard}>
+						<div className={styles.cardHeading}><Code2 size={14} /><span>FULL STACK DEVELOPMENT</span><i /></div>
+						<p>From polished interfaces<br />to <strong>reliable APIs.</strong></p>
+						<div className={styles.stackTags}><span>React</span><span>Node.js</span><span>MongoDB</span></div>
+					</div>
+					<div className={styles.statusCard}><span className={styles.statusDot} /><div><strong>Open to opportunities</strong><small>Building useful things for the web</small></div></div>
 				</div>
 			</div>
 			<div className={styles.heroFoot}><span>01 / 04</span><span>Scroll to explore <ArrowDownRight size={14} /></span></div>
