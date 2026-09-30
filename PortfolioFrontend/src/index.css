@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+	font-family: 'Manrope', 'Segoe UI', sans-serif;
+	color: #f3f7ff;
+	background: #050816;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	--bg: #050816;
+	--surface: #0b1020;
+	--card: #0d1626;
+	--text: #f3f7ff;
+	--muted: #9aa9bf;
+	--line: #1c2b42;
+	--accent: #35d6e7;
+	--accent-violet: #8b7cff;
+	--mono: 'DM Mono', 'Cascadia Code', monospace;
+}
+
+* { box-sizing: border-box; }
+html { min-width: 320px; scroll-behavior: smooth; scroll-padding-top: 84px; }
+body { min-width: 320px; min-height: 100vh; margin: 0; background-color: var(--bg); background-image: radial-gradient(#1a2b43 0.55px, transparent 0.55px); background-size: 24px 24px; color: var(--text); }
+body::before { position: fixed; z-index: -1; inset: 0; background: linear-gradient(90deg, rgb(5 8 22 / 97%), rgb(5 8 22 / 91%)); content: ''; pointer-events: none; }
+button, input, select, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #c0dfc3; outline-offset: 3px; }
+::selection { background: #126474; color: #fff; }
+.button { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 0 16px; border: 1px solid transparent; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 700; text-decoration: none; transition: transform .18s ease, background .18s ease, border-color .18s ease; }
+.button:hover { transform: translateY(-1px); }
+.buttonPrimary { background: var(--accent); color: #04121b; }
+.buttonPrimary:hover { background: #72e6ef; }
+.buttonPrimary:disabled { cursor: wait; opacity: .72; }
+.buttonQuiet { border-color: #344761; color: var(--text); }
+.buttonQuiet:hover { border-color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }

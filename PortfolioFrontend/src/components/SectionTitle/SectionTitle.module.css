@@ -1,0 +1,7 @@
+.title { max-width: 650px; margin-bottom: 34px; }
+.title h2 { margin: 8px 0 0; color: var(--text); font-size: clamp(30px, 4vw, 43px); line-height: 1.12; }
+.eyebrow { margin: 0; color: var(--accent); font: 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+.description { max-width: 570px; margin: 13px 0 0; color: var(--muted); font-size: 15px; line-height: 1.75; }
+.center { margin-right: auto; margin-left: auto; text-align: center; }
+.center .description { margin-right: auto; margin-left: auto; }
+@media (max-width: 600px) { .title { margin-bottom: 26px; } .title h2 { font-size: 31px; } .description { font-size: 14px; } }

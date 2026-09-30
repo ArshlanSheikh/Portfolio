@@ -1,0 +1,9 @@
+.footer { border-top: 1px solid var(--line); padding: 30px 0 34px; }
+.inner { width: min(1160px, calc(100% - 48px)); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.brand { color: var(--text); font: 700 16px var(--mono); text-decoration: none; }
+.brand span { color: var(--accent); }
+.inner p, .right, .note { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+.right { display: flex; align-items: center; gap: 24px; margin: 0; }
+.right a { display: inline-flex; align-items: center; gap: 6px; color: var(--text); text-decoration: none; }
+.note { width: 100%; margin-top: -7px; font-size: 11px; }
+@media (max-width: 600px) { .inner { width: calc(100% - 36px); align-items: flex-start; flex-direction: column; } .right { align-items: flex-start; flex-direction: column; gap: 10px; } }

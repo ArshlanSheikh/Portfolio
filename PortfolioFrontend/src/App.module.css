@@ -1,0 +1,6 @@
+.previewNotice { position: fixed; z-index: 30; right: 18px; bottom: 16px; max-width: 350px; padding: 11px 14px; border: 1px solid #ddc78f; border-radius: 5px; background: #fff8e8; color: #624b1e; box-shadow: 0 8px 26px rgb(0 0 0 / 12%); font-size: 11px; line-height: 1.5; }
+.notFound { min-height: 70vh; display: grid; align-content: center; justify-items: center; gap: 13px; text-align: center; }
+.notFound > span { color: var(--accent); font: 12px var(--mono); }
+.notFound h1 { margin: 0; font-size: 36px; }
+.notFound a { color: var(--accent); font-size: 13px; }
+@media (max-width: 600px) { .previewNotice { right: 10px; bottom: 10px; left: 10px; max-width: none; } }

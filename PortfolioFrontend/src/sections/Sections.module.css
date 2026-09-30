@@ -1,0 +1,32 @@
+.section { width: min(1160px, calc(100% - 48px)); margin: 0 auto; padding: 94px 0; }
+.sectionMuted { width: 100%; padding: 84px max(24px, calc((100% - 1160px) / 2)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: #080d1b; }
+.skillGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
+.skillCard { min-height: 190px; padding: 19px; border: 1px solid var(--line); border-radius: 7px; background: #0b1221; }
+.cardIcon { display: grid; width: 35px; height: 35px; place-items: center; border: 1px solid #25445b; border-radius: 6px; color: var(--accent); }
+.skillCard h3 { margin: 15px 0 12px; color: var(--text); font-size: 14px; }
+.tags { display: flex; flex-wrap: wrap; gap: 7px; }
+.tags span { padding: 6px 8px; border: 1px solid #263b50; border-radius: 4px; color: #bdcde0; font: 10px var(--mono); }
+.timeline { display: grid; gap: 20px; }
+.timelineItem { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 15px; max-width: 750px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+.timelineMark { display: grid; width: 35px; height: 35px; place-items: center; border: 1px solid #25445b; border-radius: 50%; color: var(--accent); }
+.timelineItem h3 { margin: 5px 0; font-size: 16px; }
+.timelineItem p { margin: 7px 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.meta { color: var(--accent) !important; font: 10px var(--mono) !important; text-transform: uppercase; }
+.company { color: var(--text) !important; }
+.emptyNote { display: flex; align-items: center; gap: 10px; width: fit-content; padding: 15px 17px; border: 1px dashed #36506b; border-radius: 5px; color: #b0c2d8; font-size: 13px; }
+.serviceGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.serviceCard { min-height: 145px; padding: 23px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.serviceCard h3 { margin: 15px 0 8px; font-size: 15px; }
+.serviceCard p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+.serviceIcon { color: var(--accent); }
+.simpleGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+.simpleCard { padding: 18px; border: 1px solid var(--line); border-radius: 6px; background: #0b1221; }
+.simpleCard h3 { margin: 10px 0 6px; font-size: 14px; }
+.simpleCard p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+.simpleCard svg { color: var(--accent); }
+.cta { width: min(1160px, calc(100% - 48px)); margin: 22px auto 84px; padding: 34px 38px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border: 1px solid #245168; border-radius: 8px; background: linear-gradient(110deg, #0b1c2e, #10152a); }
+.cta h2 { max-width: 560px; margin: 7px 0 0; font-size: 34px; line-height: 1.15; }
+.cta p { margin: 0; color: var(--accent); font: 10px var(--mono); text-transform: uppercase; }
+.cta a { flex: none; }
+@media (max-width: 900px) { .skillGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .simpleGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .section { width: calc(100% - 36px); padding: 58px 0; } .sectionMuted { width: 100%; padding: 56px 18px; } .skillGrid, .serviceGrid, .simpleGrid { grid-template-columns: 1fr; } .cta { width: calc(100% - 36px); margin: 6px auto 52px; align-items: flex-start; flex-direction: column; padding: 23px; } .cta h2 { font-size: 27px; } }

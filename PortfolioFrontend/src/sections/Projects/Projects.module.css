@@ -1,0 +1,26 @@
+.section { width: min(1160px, calc(100% - 48px)); margin: 0 auto; padding: 95px 0; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
+.card { overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: #0b1221; transition: transform .2s ease, border-color .2s ease; }
+.card:hover { transform: translateY(-3px); border-color: #397388; }
+.preview { position: relative; height: 178px; overflow: hidden; border-bottom: 1px solid var(--line); background: #0b1424; }
+.preview img { width: 100%; height: 100%; object-fit: cover; }
+.previewArt { position: absolute; inset: 18px 23px; border: 1px solid #284664; border-radius: 6px; background: #08101e; }
+.previewTop { height: 20px; display: flex; align-items: center; gap: 4px; padding: 0 7px; border-bottom: 1px solid #1f354e; }
+.previewTop i { width: 4px; height: 4px; border-radius: 50%; background: #778779; }
+.previewPanel { position: absolute; top: 35px; left: 12px; width: 33%; display: grid; gap: 8px; }
+.previewPanel b { height: 13px; border-radius: 3px; background: #172b45; }
+.previewPanel b:first-child { height: 26px; background: #284e75; }
+.previewChart { position: absolute; top: 39px; right: 13px; bottom: 14px; width: 49%; border: 1px solid #25415e; border-radius: 4px; background: linear-gradient(155deg, transparent 50%, rgb(53 214 231 / 25%) 51%, transparent 52%); }
+.example { position: absolute; right: 10px; top: 10px; padding: 5px 7px; border: 1px solid #3a4d77; border-radius: 3px; background: #10182c; color: #c0b8ff; font: 9px var(--mono); text-transform: uppercase; }
+.cardBody { padding: 20px; }
+.cardHeading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.cardHeading h3 { margin: 0; color: var(--text); font-size: 16px; }
+.cardHeading svg { flex: none; color: var(--accent); }
+.cardBody > p { min-height: 63px; margin: 11px 0 15px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tags span { padding: 5px 7px; border: 1px solid #263b50; border-radius: 3px; color: #bdcde0; font: 9px var(--mono); }
+.cardLinks { display: flex; justify-content: space-between; gap: 8px; margin-top: 18px; padding-top: 13px; border-top: 1px solid var(--line); color: #7e8a80; font-size: 10px; }
+.cardLinks a, .cardLinks span { display: inline-flex; align-items: center; gap: 5px; color: inherit; text-decoration: none; }
+.cardLinks a:hover { color: var(--accent); }
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .section { width: calc(100% - 36px); padding: 66px 0; } .grid { grid-template-columns: 1fr; } .preview { height: 190px; } }

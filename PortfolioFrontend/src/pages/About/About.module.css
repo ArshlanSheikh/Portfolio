@@ -1,0 +1,29 @@
+.page { width: min(1160px, calc(100% - 48px)); margin: 0 auto; }
+.pageHero { padding: 84px 0 76px; border-bottom: 1px solid var(--line); }
+.eyebrow { margin: 0; color: var(--accent); font: 10px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+.pageHero h1 { margin: 18px 0 15px; font-size: clamp(42px, 6vw, 68px); line-height: 1.05; letter-spacing: -.05em; }
+.pageHero h1 span { color: #c4d8c7; }
+.pageHero > p:last-child { max-width: 650px; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.8; }
+.background { display: grid; grid-template-columns: 180px 1fr; gap: 45px; padding: 76px 0; border-bottom: 1px solid var(--line); }
+.sectionLabel { padding-top: 9px; color: #7e8a81; font: 10px var(--mono); letter-spacing: .1em; }
+.background :global(.title) { margin-bottom: 17px; }
+.background :global(.title h2) { font-size: 34px; }
+.body { max-width: 740px; color: var(--muted); font-size: 14px; line-height: 1.9; }
+.inlineLink { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; color: var(--accent); font-size: 13px; text-decoration: none; }
+.principles { padding: 77px 0; }
+.principleGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.principleGrid article { padding: 23px; border: 1px solid var(--line); border-radius: 7px; background: #141a17; }
+.principleGrid svg { color: var(--accent); }
+.principleGrid h3 { margin: 20px 0 9px; font-size: 15px; }
+.principleGrid p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.techSection { padding: 43px 0; display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.techSection h2, .goals h2 { margin: 10px 0 0; font-size: 26px; }
+.techGroups { display: grid; gap: 17px; }
+.techGroups h3 { margin: 0 0 5px; color: #d8e2d9; font-size: 13px; }
+.techGroups p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.goals { display: grid; grid-template-columns: 34px 1fr; gap: 17px; padding: 70px 0; }
+.goals > svg { color: var(--accent); }
+.goals h2 { max-width: 520px; }
+.goals div > p:last-child { max-width: 700px; color: var(--muted); font-size: 14px; line-height: 1.8; }
+.aboutCta { display: flex; align-items: center; justify-content: space-between; padding: 24px 0 78px; border-top: 1px solid var(--line); color: #c5d0c7; font-size: 14px; }
+@media (max-width: 700px) { .page { width: calc(100% - 36px); } .pageHero { padding: 60px 0; } .background { grid-template-columns: 1fr; gap: 20px; padding: 55px 0; } .principleGrid { grid-template-columns: 1fr; } .techSection { grid-template-columns: 1fr; gap: 26px; } .goals { padding: 55px 0; } }
