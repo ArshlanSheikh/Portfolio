@@ -100,6 +100,46 @@ export const portfolioService = {
     return await apiClient.delete(`/education/admin/${id}`);
   },
 
+  // --- Inquiries ---
+  async submitInquiry(inquiryData) {
+    return await apiClient.post('/inquiries', inquiryData);
+  },
+  async getAdminInquiries(params = {}) {
+    return await apiClient.get('/inquiries/admin', { params });
+  },
+  async getInquiryById(id) {
+    return await apiClient.get(`/inquiries/admin/${id}`);
+  },
+  async updateInquiryStatus(id, updateData) {
+    return await apiClient.put(`/inquiries/admin/${id}/status`, updateData);
+  },
+  async deleteInquiry(id) {
+    return await apiClient.delete(`/inquiries/admin/${id}`);
+  },
+
+  // --- Media & Resume ---
+  async uploadMedia(formData) {
+    return await apiClient.post('/media/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  async uploadResume(formData) {
+    return await apiClient.post('/media/resume', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  async getAdminMedia() {
+    return await apiClient.get('/media');
+  },
+  async getPublicResume() {
+    return await apiClient.get('/media/resume');
+  },
+  async deleteMedia(id, force = false) {
+    return await apiClient.delete(`/media/${id}`, {
+      params: { force: force ? 'true' : 'false' },
+    });
+  },
+
   // --- Dashboard ---
   async getDashboardStats() {
     return await apiClient.get('/dashboard/stats');

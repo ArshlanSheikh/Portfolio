@@ -20,6 +20,14 @@ import {
   EyeOff,
   ArrowUpRight,
   Check,
+  Upload,
+  FileText,
+  Copy,
+  ExternalLink,
+  Loader2,
+  Inbox,
+  UserCheck,
+  Archive,
 } from 'lucide-react';
 import portfolioService from '../../services/portfolioService.js';
 import styles from './AdminConsole.module.css';
@@ -74,7 +82,9 @@ function AdminConsole({ view = 'dashboard' }) {
       {view === 'experience' && <ExperienceManager showToast={showToast} />}
       {view === 'services' && <ServicesManager showToast={showToast} />}
       {view === 'education' && <EducationManager showToast={showToast} />}
-      {!['dashboard', 'profile', 'projects', 'skills', 'experience', 'services', 'education'].includes(view) && (
+      {view === 'inquiries' && <InquiryManager showToast={showToast} />}
+      {view === 'media' && <MediaManager showToast={showToast} />}
+      {!['dashboard', 'profile', 'projects', 'skills', 'experience', 'services', 'education', 'inquiries', 'media'].includes(view) && (
         <ComingSoonManager title={title} />
       )}
     </div>
@@ -665,6 +675,7 @@ function ProjectModal({ project, onClose, onSaved }) {
               Cancel
             </button>
             <button type="submit" className={styles.actionButton} disabled={isSubmitting}>
+              <Check size={16} />
               {isSubmitting ? 'Saving...' : 'Save Project'}
             </button>
           </footer>
@@ -1722,14 +1733,554 @@ function EducationModal({ education, onClose, onSaved }) {
   );
 }
 
-// Fallback for Phase 3 & 4 items in Phase 2
+// ------------------------------------------------------------------
+// 8. INQUIRY MANAGER (PHASE 3)
+// ------------------------------------------------------------------
+function InquiryManager({ showToast }) {
+  const [inquiries, setInquiries] = useState([]);
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [search, setSearch] = useState('');
+  const [selectedInquiry, setSelectedInquiry] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const reload = () => setRefreshTrigger((prev) => prev + 1);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchInquiries = async () => {
+      try {
+        const res = await portfolioService.getAdminInquiries({
+          status: statusFilter,
+          search,
+        });
+        if (isMounted && res?.data?.inquiries) {
+          setInquiries(res.data.inquiries);
+          setSelectedInquiry((prev) => (!prev && res.data.inquiries.length > 0 ? res.data.inquiries[0] : prev));
+        }
+      } catch (err) {
+        console.error('Error fetching admin inquiries:', err);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+    fetchInquiries();
+    return () => {
+      isMounted = false;
+    };
+  }, [statusFilter, search, refreshTrigger]);
+
+  const handleSelect = async (inq) => {
+    setSelectedInquiry(inq);
+    if (!inq.isRead) {
+      try {
+        await portfolioService.getInquiryById(inq._id);
+        reload();
+      } catch (err) {
+        console.warn('Failed to mark read:', err);
+      }
+    }
+  };
+
+  const handleUpdateStatus = async (id, newStatus) => {
+    try {
+      await portfolioService.updateInquiryStatus(id, { status: newStatus });
+      showToast(`Inquiry marked as ${newStatus}`);
+      reload();
+      if (selectedInquiry?._id === id) {
+        setSelectedInquiry((prev) => ({ ...prev, status: newStatus }));
+      }
+    } catch (err) {
+      alert(err.message || 'Failed to update status');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Delete this inquiry permanently?')) return;
+    try {
+      await portfolioService.deleteInquiry(id);
+      showToast('Inquiry deleted successfully.');
+      setSelectedInquiry(null);
+      reload();
+    } catch (err) {
+      alert(err.message || 'Failed to delete inquiry');
+    }
+  };
+
+  return (
+    <div className={styles.inquiryLayout}>
+      <section className={styles.panel}>
+        <div className={styles.toolbar}>
+          <label className={styles.search}>
+            <Search size={16} />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search sender, email, subject..."
+            />
+          </label>
+          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+            <option value="All">All Statuses</option>
+            <option value="New">New</option>
+            <option value="Reviewed">Reviewed</option>
+            <option value="Contacted">Contacted</option>
+            <option value="Archived">Archived</option>
+          </select>
+        </div>
+
+        <div className={styles.inquiryList}>
+          {isLoading ? (
+            <p className={styles.empty}>Loading inquiries...</p>
+          ) : inquiries.length ? (
+            inquiries.map((inq) => (
+              <button
+                type="button"
+                key={inq._id}
+                className={`${styles.inquiryRow} ${selectedInquiry?._id === inq._id ? styles.selected : ''}`}
+                onClick={() => handleSelect(inq)}
+              >
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    {!inq.isRead && (
+                      <span
+                        style={{
+                          width: 7,
+                          height: 7,
+                          borderRadius: '50%',
+                          background: '#00f2fe',
+                          display: 'inline-block',
+                        }}
+                      />
+                    )}
+                    <strong>{inq.subject}</strong>
+                  </div>
+                  <small>
+                    {inq.name} · {inq.company ? `${inq.company} · ` : ''}
+                    {new Date(inq.createdAt).toLocaleDateString()}
+                  </small>
+                </div>
+                <span
+                  className={`${styles.status} ${
+                    inq.status === 'New'
+                      ? styles.statusDraft
+                      : inq.status === 'Contacted'
+                      ? styles.statusPublished
+                      : ''
+                  }`}
+                >
+                  {inq.status}
+                </span>
+              </button>
+            ))
+          ) : (
+            <div className={styles.empty}>
+              <Inbox size={22} style={{ color: '#64748b', marginBottom: 8 }} />
+              <p>No inquiries found.</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <aside className={`${styles.panel} ${styles.detail}`}>
+        <p className={styles.eyebrow}>INQUIRY DETAILS</p>
+        {selectedInquiry ? (
+          <>
+            <h2>{selectedInquiry.subject}</h2>
+            <div style={{ margin: '8px 0 16px', color: '#94a3b8', fontSize: '13px' }}>
+              <strong style={{ color: '#f8fafc', display: 'block' }}>{selectedInquiry.name}</strong>
+              <a
+                href={`mailto:${selectedInquiry.email}`}
+                style={{ color: '#00f2fe', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+              >
+                {selectedInquiry.email} <ExternalLink size={12} />
+              </a>
+              {selectedInquiry.company && <p style={{ margin: '4px 0 0' }}>Company: {selectedInquiry.company}</p>}
+              <p style={{ margin: '4px 0 0', fontSize: '11px', color: '#64748b' }}>
+                Type: {selectedInquiry.inquiryType} · Received: {new Date(selectedInquiry.createdAt).toLocaleString()}
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+              <span className={styles.status}>{selectedInquiry.status}</span>
+              {selectedInquiry.status !== 'Contacted' && (
+                <button
+                  type="button"
+                  className={styles.actionButton}
+                  style={{ minHeight: 30, fontSize: 11, padding: '0 10px' }}
+                  onClick={() => handleUpdateStatus(selectedInquiry._id, 'Contacted')}
+                >
+                  <UserCheck size={13} /> Mark Contacted
+                </button>
+              )}
+              {selectedInquiry.status !== 'Archived' && (
+                <button
+                  type="button"
+                  className={styles.cancelButton}
+                  style={{ minHeight: 30, fontSize: 11, padding: '0 10px' }}
+                  onClick={() => handleUpdateStatus(selectedInquiry._id, 'Archived')}
+                >
+                  <Archive size={13} /> Archive
+                </button>
+              )}
+            </div>
+
+            <div className={styles.detailMessage}>
+              <strong style={{ color: '#e2e8f0', fontSize: '12px', display: 'block', marginBottom: 6 }}>
+                Message Content:
+              </strong>
+              <p style={{ whiteSpace: 'pre-wrap', color: '#cbd5e1', fontSize: '13px', lineHeight: 1.7, margin: 0 }}>
+                {selectedInquiry.message}
+              </p>
+            </div>
+
+            <div style={{ marginTop: 24, display: 'flex', gap: 10 }}>
+              <a
+                href={`mailto:${selectedInquiry.email}?subject=Re: ${encodeURIComponent(selectedInquiry.subject)}`}
+                className="button buttonPrimary"
+                style={{ fontSize: 12, minHeight: 34 }}
+              >
+                <Mail size={14} /> Reply via Email
+              </a>
+              <button
+                type="button"
+                className={styles.cancelButton}
+                style={{ fontSize: 12, minHeight: 34, color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+                onClick={() => handleDelete(selectedInquiry._id)}
+              >
+                <Trash2 size={14} /> Delete
+              </button>
+            </div>
+          </>
+        ) : (
+          <p className={styles.empty}>Select an inquiry to review details.</p>
+        )}
+      </aside>
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------
+// 9. MEDIA & RESUME MANAGER (PHASE 3)
+// ------------------------------------------------------------------
+function MediaManager({ showToast }) {
+  const [mediaList, setMediaList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isResumeUploading, setIsResumeUploading] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const reload = () => setRefreshTrigger((prev) => prev + 1);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchMedia = async () => {
+      try {
+        const res = await portfolioService.getAdminMedia();
+        if (isMounted && res?.data?.media) {
+          setMediaList(res.data.media);
+        }
+      } catch (err) {
+        console.error('Error fetching admin media:', err);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+    fetchMedia();
+    return () => {
+      isMounted = false;
+    };
+  }, [refreshTrigger]);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const fd = new FormData();
+    fd.append('file', file);
+    setIsUploading(true);
+
+    try {
+      await portfolioService.uploadMedia(fd);
+      showToast(`Uploaded '${file.name}' successfully!`);
+      reload();
+    } catch (err) {
+      alert(err.message || 'Failed to upload file');
+    } finally {
+      setIsUploading(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleResumeUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== 'application/pdf') {
+      alert('Resume file must be a PDF document.');
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append('resume', file);
+    setIsResumeUploading(true);
+
+    try {
+      await portfolioService.uploadResume(fd);
+      showToast('Resume PDF uploaded and published successfully!');
+      reload();
+    } catch (err) {
+      alert(err.message || 'Failed to upload resume');
+    } finally {
+      setIsResumeUploading(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleCopyUrl = (url) => {
+    // If relative path like /uploads/..., make absolute for convenience
+    const fullUrl = url.startsWith('http') ? url : `${window.location.origin}${url}`;
+    navigator.clipboard.writeText(fullUrl);
+    showToast('Asset URL copied to clipboard!');
+  };
+
+  const handleDelete = async (id, originalName) => {
+    if (!window.confirm(`Delete media asset '${originalName}'?`)) return;
+    try {
+      await portfolioService.deleteMedia(id);
+      showToast(`Asset '${originalName}' deleted.`);
+      reload();
+    } catch (err) {
+      // If error indicates asset in use, ask user if they want to force delete
+      if (err.data?.inUse) {
+        if (window.confirm(`${err.message}\n\nDo you want to FORCE delete this asset anyway?`)) {
+          try {
+            await portfolioService.deleteMedia(id, true);
+            showToast(`Asset '${originalName}' force deleted.`);
+            reload();
+          } catch (forceErr) {
+            alert(forceErr.message || 'Force delete failed');
+          }
+        }
+      } else {
+        alert(err.message || 'Failed to delete asset');
+      }
+    }
+  };
+
+  const formatSize = (bytes) => {
+    if (!bytes) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
+  };
+
+  return (
+    <>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
+        {/* General Asset Uploader */}
+        <div className={styles.profileCard} style={{ padding: 20 }}>
+          <h3 style={{ margin: '0 0 6px', fontSize: '15px', color: '#fff' }}>Upload Media Asset</h3>
+          <p style={{ margin: '0 0 16px', color: '#94a3b8', fontSize: '12px' }}>
+            Supported: JPEG, PNG, WEBP, GIF, SVG. Max 10MB.
+          </p>
+          <label className={styles.actionButton} style={{ cursor: isUploading ? 'wait' : 'pointer' }}>
+            {isUploading ? (
+              <>
+                <Loader2 size={16} className="globalSpinner" style={{ width: 14, height: 14 }} /> Uploading...
+              </>
+            ) : (
+              <>
+                <Upload size={16} /> Choose Image / Asset
+              </>
+            )}
+            <input
+              type="file"
+              accept="image/*,application/pdf"
+              style={{ display: 'none' }}
+              disabled={isUploading}
+              onChange={handleFileUpload}
+            />
+          </label>
+        </div>
+
+        {/* Resume PDF Uploader */}
+        <div className={styles.profileCard} style={{ padding: 20, borderColor: 'rgba(0, 242, 254, 0.2)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+            <FileText size={18} style={{ color: '#00f2fe' }} />
+            <h3 style={{ margin: 0, fontSize: '15px', color: '#fff' }}>Replace Resume PDF</h3>
+          </div>
+          <p style={{ margin: '0 0 16px', color: '#94a3b8', fontSize: '12px' }}>
+            Updates your active resume link across public portfolio and download buttons.
+          </p>
+          <label className="button buttonPrimary" style={{ cursor: isResumeUploading ? 'wait' : 'pointer' }}>
+            {isResumeUploading ? (
+              <>
+                <Loader2 size={16} className="globalSpinner" style={{ width: 14, height: 14 }} /> Uploading Resume...
+              </>
+            ) : (
+              <>
+                <Upload size={15} /> Upload PDF Resume
+              </>
+            )}
+            <input
+              type="file"
+              accept="application/pdf"
+              style={{ display: 'none' }}
+              disabled={isResumeUploading}
+              onChange={handleResumeUpload}
+            />
+          </label>
+        </div>
+      </div>
+
+      {/* Media Assets Gallery */}
+      <section className={styles.panel}>
+        <div className={styles.panelTitle}>
+          <div>
+            <h2>Stored Assets ({mediaList.length})</h2>
+            <p>Cloudinary and local file storage</p>
+          </div>
+        </div>
+
+        {isLoading ? (
+          <p className={styles.empty}>Loading assets from storage...</p>
+        ) : mediaList.length ? (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+              gap: 16,
+              padding: 20,
+            }}
+          >
+            {mediaList.map((asset) => {
+              const isPdf = asset.format === 'pdf' || asset.url.endsWith('.pdf');
+              return (
+                <div
+                  key={asset._id}
+                  style={{
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: 10,
+                    background: '#090c12',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <div
+                    style={{
+                      height: 120,
+                      background: '#161c2b',
+                      display: 'grid',
+                      placeItems: 'center',
+                      overflow: 'hidden',
+                      position: 'relative',
+                    }}
+                  >
+                    {isPdf ? (
+                      <div style={{ textAlign: 'center', color: '#00f2fe' }}>
+                        <FileText size={36} />
+                        <span style={{ display: 'block', fontSize: 10, fontFamily: 'var(--mono)', marginTop: 4 }}>
+                          PDF DOCUMENT
+                        </span>
+                      </div>
+                    ) : (
+                      <img
+                        src={asset.url}
+                        alt={asset.originalName}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    )}
+                    <span
+                      style={{
+                        position: 'absolute',
+                        top: 6,
+                        right: 6,
+                        fontSize: 9,
+                        fontFamily: 'var(--mono)',
+                        padding: '2px 6px',
+                        borderRadius: 4,
+                        background: 'rgba(0,0,0,0.7)',
+                        color: asset.storage === 'cloudinary' ? '#00f2fe' : '#10b981',
+                      }}
+                    >
+                      {asset.storage.toUpperCase()}
+                    </span>
+                  </div>
+
+                  <div style={{ padding: 12, flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <strong
+                      style={{
+                        fontSize: 12,
+                        color: '#f8fafc',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: 'block',
+                      }}
+                      title={asset.originalName}
+                    >
+                      {asset.originalName}
+                    </strong>
+                    <small style={{ color: '#64748b', fontSize: 10, margin: '2px 0 10px' }}>
+                      {formatSize(asset.size)} · {asset.format.toUpperCase()}
+                    </small>
+
+                    <div style={{ marginTop: 'auto', display: 'flex', gap: 6 }}>
+                      <button
+                        type="button"
+                        className={styles.cancelButton}
+                        style={{ flex: 1, minHeight: 28, fontSize: 11, padding: 0 }}
+                        title="Copy asset URL"
+                        onClick={() => handleCopyUrl(asset.url)}
+                      >
+                        <Copy size={12} /> Copy
+                      </button>
+                      <a
+                        href={asset.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={styles.cancelButton}
+                        style={{ width: 28, minHeight: 28, padding: 0 }}
+                        title="Open in new tab"
+                      >
+                        <ExternalLink size={12} />
+                      </a>
+                      <button
+                        type="button"
+                        className={styles.cancelButton}
+                        style={{ width: 28, minHeight: 28, padding: 0, color: '#f87171' }}
+                        title="Delete asset"
+                        onClick={() => handleDelete(asset._id, asset.originalName)}
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className={styles.empty}>No media assets uploaded yet.</p>
+        )}
+      </section>
+    </>
+  );
+}
+
+// Fallback for Phase 4 items in Phase 3
 function ComingSoonManager({ title }) {
   return (
     <section className={styles.panel} style={{ textAlign: 'center', padding: '48px 24px' }}>
       <Clock3 size={24} style={{ color: '#00f2fe', marginBottom: 12 }} />
       <h2 style={{ color: '#fff', fontSize: '18px', margin: '0 0 8px' }}>{title} Management</h2>
       <p style={{ color: '#94a3b8', fontSize: '13px', maxWidth: '480px', margin: '0 auto' }}>
-        This module is slated for implementation in Phase 3 & 4. All Core CMS sections (Projects, Skills, Experience, Services, Education, Profile, and Dashboard) are fully operational.
+        This module is slated for implementation in Phase 4. All Core CMS sections, Media Library, Resume, and Inquiries are fully operational.
       </p>
     </section>
   );

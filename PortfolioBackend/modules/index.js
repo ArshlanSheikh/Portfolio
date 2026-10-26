@@ -7,6 +7,8 @@ import projectRoutes from './projects/project.routes.js';
 import serviceRoutes from './services/service.routes.js';
 import educationRoutes from './education/education.routes.js';
 import dashboardRoutes from './dashboard/dashboard.routes.js';
+import inquiryRoutes from './inquiries/inquiry.routes.js';
+import mediaRoutes from './media/media.routes.js';
 
 const router = express.Router();
 
@@ -19,6 +21,8 @@ router.use('/projects', projectRoutes);
 router.use('/services', serviceRoutes);
 router.use('/education', educationRoutes);
 router.use('/dashboard', dashboardRoutes);
+router.use('/inquiries', inquiryRoutes);
+router.use('/media', mediaRoutes);
 
 // Health check endpoint
 router.get('/health', (req, res) => {

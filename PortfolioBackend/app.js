@@ -53,6 +53,25 @@ app.use('/api/v1/auth/login', authLimiter);
 // Central API Router
 app.use('/api/v1', moduleRoutes);
 
+// Convenience shortcut for downloading active resume
+app.get('/resume', async (req, res, next) => {
+  try {
+    const Profile = (await import('./modules/profile/profile.model.js')).default;
+    const profile = await Profile.findOne().select('resumeUrl');
+    if (profile && profile.resumeUrl) {
+      return res.redirect(profile.resumeUrl);
+    }
+    return res.status(404).json({
+      success: false,
+      message: 'No published resume found. Please upload one via the Admin Media Library.',
+      data: null,
+      error: 'Resume not found',
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // 404 Handler for undefined routes
 app.use((req, res) => {
   res.status(404).json({
