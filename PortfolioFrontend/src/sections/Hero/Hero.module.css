@@ -879,65 +879,35 @@
   }
 
   .inner {
-    padding: 40px 0 24px;
-    gap: 32px;
-  }
-
-  .kickerBadge {
-    margin-bottom: 16px;
-    padding: 5px 12px;
-  }
-
-  .headline {
-    font-size: 38px;
-    margin-bottom: 16px;
-  }
-
-  .rolePlate {
-    margin-bottom: 16px;
-    font-size: 11px;
-  }
-
-  .intro {
-    font-size: 14px;
-    line-height: 1.65;
-    margin-bottom: 24px;
-  }
-
-  .actions {
-    gap: 10px;
-    margin-bottom: 24px;
-  }
-
-  .primaryCta {
-    width: 100%;
-    justify-content: center;
-    padding: 12px 20px;
-  }
-
-  .secondaryCta, .resumeCta {
-    flex: 1;
-    justify-content: center;
-    padding: 11px 16px;
-    font-size: 12px;
-  }
-
-  .socialDock {
-    flex-wrap: wrap;
-    gap: 10px;
+    padding: 32px 0 20px;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
   }
 
   .visualStage {
-    height: 380px;
+    order: -1;
+    height: 340px;
+    margin-bottom: 0;
   }
 
   .portraitComposition {
-    max-width: 320px;
+    max-width: 280px;
+    height: 100%;
   }
 
   .portraitAura {
-    width: 280px;
-    height: 340px;
+    width: 240px;
+    height: 280px;
+    filter: blur(40px);
+  }
+
+  .portraitImage {
+    height: 98%;
+  }
+
+  .portraitFloorFade {
+    height: 70px;
   }
 
   .techBadge {
@@ -946,18 +916,73 @@
 
   .statusPill {
     position: static;
-    margin-top: -30px;
-    width: 100%;
+    margin: 12px auto 0;
+    width: fit-content;
+    max-width: 100%;
     justify-content: center;
-    border-radius: 10px;
+    padding: 9px 16px;
   }
 
   .statusNote {
-    max-width: none;
+    display: none;
+  }
+
+  .copy {
+    text-align: center;
+  }
+
+  .kickerBadge {
+    margin: 0 auto 16px;
+    padding: 5px 12px;
+  }
+
+  .headline {
+    font-size: 34px;
+    margin-bottom: 14px;
+    letter-spacing: -0.025em;
+  }
+
+  .rolePlate {
+    margin: 0 auto 16px;
+    font-size: 11px;
+    justify-content: center;
+  }
+
+  .intro {
+    font-size: 14px;
+    line-height: 1.65;
+    margin: 0 auto 24px;
+  }
+
+  .actions {
+    gap: 10px;
+    margin-bottom: 24px;
+    justify-content: center;
+  }
+
+  .primaryCta {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 20px;
+  }
+
+  .secondaryCta, .resumeCta {
+    flex: 1;
+    justify-content: center;
+    padding: 11px 14px;
+    font-size: 12px;
+  }
+
+  .socialDock {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .heroFoot {
     padding: 14px 0 20px;
+    flex-direction: column;
+    gap: 10px;
   }
 }
 
