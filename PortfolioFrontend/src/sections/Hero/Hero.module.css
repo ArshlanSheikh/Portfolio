@@ -463,6 +463,12 @@
   -webkit-user-drag: none;
   mask-image: linear-gradient(to bottom, black 72%, rgba(0, 0, 0, 0.75) 86%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, black 72%, rgba(0, 0, 0, 0.75) 86%, transparent 100%);
+  animation: portraitBreathe 6s ease-in-out infinite;
+}
+
+@keyframes portraitBreathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 .portraitComposition:hover .portraitImage {

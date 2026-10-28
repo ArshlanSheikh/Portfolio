@@ -29,6 +29,7 @@ function Hero() {
   const portraitLayerRef = useRef(null);
   const chipsLayerRef = useRef(null);
   const copyLayerRef = useRef(null);
+  const primaryBtnRef = useRef(null);
 
   // Target and current interpolated coordinates
   const mouseCoords = useRef({ targetX: 0, targetY: 0, currentX: 0, currentY: 0 });
@@ -129,6 +130,22 @@ function Hero() {
     mouseCoords.current.targetX = normX;
     mouseCoords.current.targetY = normY;
 
+    // Magnetic attraction for primary CTA button
+    if (primaryBtnRef.current) {
+      const btnRect = primaryBtnRef.current.getBoundingClientRect();
+      const btnCenterX = btnRect.left + btnRect.width / 2;
+      const btnCenterY = btnRect.top + btnRect.height / 2;
+      const dist = Math.hypot(clientX - btnCenterX, clientY - btnCenterY);
+
+      if (dist < 140) {
+        const pullX = (clientX - btnCenterX) * 0.22;
+        const pullY = (clientY - btnCenterY) * 0.22;
+        primaryBtnRef.current.style.transform = `translate3d(${pullX}px, ${pullY}px, 0)`;
+      } else {
+        primaryBtnRef.current.style.transform = `translate3d(0, 0, 0)`;
+      }
+    }
+
     if (spotlightRef.current) {
       const spotX = clientX - rect.left;
       const spotY = clientY - rect.top;
@@ -144,6 +161,9 @@ function Hero() {
     isHovered.current = false;
     mouseCoords.current.targetX = 0;
     mouseCoords.current.targetY = 0;
+    if (primaryBtnRef.current) {
+      primaryBtnRef.current.style.transform = 'translate3d(0, 0, 0)';
+    }
     startLoop();
   };
 
@@ -247,7 +267,7 @@ function Hero() {
           <p className={styles.intro}>{bio}</p>
 
           <div className={styles.actions}>
-            <a className={styles.primaryCta} href="#projects">
+            <a ref={primaryBtnRef} className={styles.primaryCta} href="#projects">
               <span>Explore My Work</span>
               <span className={styles.ctaIconWrapper}>
                 <ArrowDownRight size={17} />
